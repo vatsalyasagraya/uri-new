@@ -1,7 +1,7 @@
 #main {
   padding: 2rem;
   display: flex;
-  justify-content: space-between;
+  /* justify-content: space-between; */
 }
 #canvasContainer {
   position: relative;
@@ -50,7 +50,7 @@
   }
 
 /* Tableeeeeeeeeeee */
-table {
+/* table {
   font-family: arial, sans-serif;
   border-collapse: collapse;
   width: 30%;
@@ -65,4 +65,4 @@ th {
 
 tr:nth-child(even) {
   background-color: #dddddd;
-}
+} */

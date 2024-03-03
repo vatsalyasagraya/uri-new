@@ -22,7 +22,7 @@ imageInput.addEventListener("change", function (event) {
     var x = 0;
     rectangles.forEach(function (rectangle) {
       const rectOverlay = document.createElement("div");
-      rectOverlay.id = "rectangle" + ++x;
+      rectOverlay.id = 'rectangle' + ++x;
       rectOverlay.classList.add("rectangle-overlay-"+rectangle.type);
       rectOverlay.style.left = rectangle.x + "px";
       rectOverlay.style.top = rectangle.y + "px";
@@ -30,7 +30,7 @@ imageInput.addEventListener("change", function (event) {
       rectOverlay.style.height = rectangle.h + "px";
       canvasContainer.appendChild(rectOverlay);
     });
-    updateTable();
+    // updateTable();
   };
 
   reader.readAsDataURL(file);
@@ -90,49 +90,29 @@ function finishDrawing(event) {
 
       rectangles.push(rectangle);
       console.log(rectangles);
-        updateTable();
+      // updateTable();
+
+
+      // Append delete button above the rectangle
+      const deleteButton = createDeleteButton(rectangle.id); // Pass the ID of the delete button
+      canvasContainer.appendChild(deleteButton);
+      deleteButton.style.position = 'absolute';
+      deleteButton.style.left = rectangle.x + 'px';
+      deleteButton.style.top = (rectangle.y - 20) + 'px';
+
+      const selectList = createSelectList(rectangle.id, rectangle.type);
+      canvasContainer.appendChild(selectList);
+      selectList.style.position = 'absolute';
+      selectList.style.left = (rectangle.x+60) + 'px'
+      selectList.style.top = (rectangle.y-18) + 'px';
     }
   }
 }
 
-///
-///
-///
-/// Tableeeeeeeeeeeeeee
-function updateTable() {
-  const table = document.getElementById("rectangleTable");
-  // Clear existing rows
-  while (table.rows.length > 1) {
-    table.deleteRow(1);
-  }
-
-  // Add rows based on the rectangles array
-  rectangles.forEach((rectangle) => {
-    var selectList = createSelectList(rectangle.id, rectangle.type);
-    var deleteButton = createDeleteButton(rectangle.id);
-
-    const row = table.insertRow(-1);
-    const cellX = row.insertCell(0);
-    const cellY = row.insertCell(1);
-    const cellWidth = row.insertCell(2);
-    const cellHeight = row.insertCell(3);
-    const cellType = row.insertCell(4);
-    const cellDelete = row.insertCell(5);
-
-    cellX.textContent = rectangle.x;
-    cellY.textContent = rectangle.y;
-    cellWidth.textContent = rectangle.w;
-    cellHeight.textContent = rectangle.h;
-    cellType.appendChild(selectList);
-    cellDelete.appendChild(deleteButton);
-  });
-}
-///
-///
-///
 ///listtttttttttttt
 function createSelectList(id, type) {
   var selectList = document.createElement("select");
+  selectList.id = 'selectList'+ id;
 
   var option0 = document.createElement("option");
   option0.value = "select";
@@ -188,23 +168,38 @@ function updateTypeById(rectangles, id, type) {
 
 ///
 ///
-function createDeleteButton(id) {
+///
+///
+///Delete Buttonnnn
+function createDeleteButton(rectangleId) {
+  var deleteButtonId=  'deleteButton' + rectangleId;
+  var selectListId=  'selectList' + rectangleId;
   var deleteButton = document.createElement("button");
+  deleteButton.id = deleteButtonId;
   deleteButton.textContent = "Delete";
-  deleteButton.addEventListener("click",function() {
-    let i=0;
+  deleteButton.addEventListener("click", function() {
+    // Delete the rectangle
+    let i = 0;
     for (i = 0; i < rectangles.length; i++) {
-        if (rectangles[i].id === id) { 
-            rectangles.splice(i,1);
-            updateTable();
-          break; // Assuming each ID is unique, exit the loop after updating
-        }
+      if (rectangles[i].id === rectangleId) {
+        rectangles.splice(i, 1);
+        break; // Assuming each ID is unique, exit the loop after updating
+      }
     }
-    var elementToDelete = document.getElementById(id);
-    if (elementToDelete) {
-        elementToDelete.remove();
+    var rectangleToDelete = document.getElementById(rectangleId);
+    if (rectangleToDelete) {
+      rectangleToDelete.remove();
     }
 
+    // Delete the delete button & select list itself
+    var buttonToDelete = document.getElementById(deleteButtonId);
+    var listToDelete = document.getElementById(selectListId);
+    if (buttonToDelete) {
+      buttonToDelete.remove();
+    }
+    if (listToDelete) {
+      listToDelete.remove();
+    }
   });
-return deleteButton
+  return deleteButton;
 }
